@@ -1,1 +1,0 @@
-@extends('panel.login.form')
