@@ -4,86 +4,107 @@ namespace App\Http\Controllers;
 
 use App\Models\UserTypeModel;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Gate;
 class UserTypeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        $userType = UserTypeModel::withTrashed()->get();
-        return $userType;
-    }
+	/**
+	* Display a listing of the resource.
+	*
+	* @return \Illuminate\Http\Response
+	*/
+	public function index(Request $request)
+	{
+		Gate::forUser($request['payload'])->authorize('userType-viewAny');
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request )    {
+		return UserTypeModel::get();
+	}
 
-        $userType = $request->get('id') ? UserTypeModel::find($request->get('id')) : new UserTypeModel;
+	/**
+	* Store a newly created resource in storage.
+	*
+	* @param  \Illuminate\Http\Request  $request
+	* @return \Illuminate\Http\Response
+	*/
+	public function store(Request $request)
+	{
+		Gate::forUser($request['payload'])->authorize('userType-create');
 
-        $userType->fill($request->all())->save();
+		$data = $request->all();
 
-        return ($userType);
+		if ($hasInvalidRules = hasInvalidRulesModel(UserTypeModel::class, $data)) {
+			return $hasInvalidRules;
+		}
 
-    }
+		$userType = new UserTypeModel;
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id = null)
-    {
-        $userType = null;
-		if ($id) {
-			$userType = UserTypeModel::find($id);
-        }
+		if ($userType->where('name', $data['name'])->where('level', $data['level'])->first()) {
+			return response()->json([ 'errors' => ['Tipo de usuário já cadastrado'] ], 409);
+		}
 
-        return view(['userType' => $userType]);
-    }
+		$userType->fill($data)->save();
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)    {
+		return $userType;
+	}
 
-        UserTypeModel::find($id)->fill($request->all())->save();
+	/**
+	* Display the specified resource.
+	*
+	* @param  int  $id
+	* @return \Illuminate\Http\Response
+	*/
+	public function show(Request $request, $id)
+	{
+		if ($userType = UserTypeModel::find($id)) {
+			Gate::forUser($request['payload'])->authorize('userType-view', $userType);
 
+			return $userType;
+		}
 
+		return response()->json([ 'errors' => ['Tipo de usuário não existente ou desativado'] ], 410);
+	}
 
+	/**
+	* Update the specified resource in storage.
+	*
+	* @param  \Illuminate\Http\Request  $request
+	* @param  int  $id
+	* @return \Illuminate\Http\Response
+	*/
+	public function update(Request $request, $id)
+	{
+		if ($userType = UserTypeModel::find($id)) {
+			Gate::forUser($request['payload'])->authorize('userType-update', $userType);
 
-    }
+			$data = $request->all();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        UserTypeModel::find($id)->delete();
+			if ($hasInvalidRules = hasInvalidRulesModel(UserTypeModel::class, $data)) {
+				return $hasInvalidRules;
+			}
 
-        return 'Foi Deletado';
-    }
+			$userType->fill($data)->save();
 
-    public function restore(Request $request, $id) {
-        UserTypeModel::withTrashed()
-		->where('id', $id)
-		->restore();
+			return $userType;
+		}
 
-        return 'Restaurado';
-    }
+		return response()->json([ 'errors' => ['Tipo de usuário não existente ou desativado'] ], 410);
+	}
+
+	/**
+	* Remove the specified resource from storage.
+	*
+	* @param  int  $id
+	* @return \Illuminate\Http\Response
+	*/
+	public function destroy(Request $request, $id)
+	{
+		if ($userType = UserTypeModel::find($id)) {
+			Gate::forUser($request['payload'])->authorize('userType-delete', $userType);
+
+			$userType->delete();
+
+			return $userType;
+		}
+
+		return response()->json([ 'errors' => ['Tipo de usuário não existente ou já desativado'] ], 410);
+	}
 }

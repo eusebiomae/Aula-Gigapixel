@@ -1,7 +1,10 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Models\UserModel;
 use Illuminate\Support\Facades\Route;
+use Jose\Component\Core\JWK;
+use Jose\Component\Core\JWT;
+use Jose\Easy\Build;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,12 +17,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group([ 'prefix' => 'auth' ], function () {
+	Route::post('', 'AuthController@auth');
+	Route::get('getOctKey', 'AuthController@getOctKey');
 });
 
-Route::group([], function () {
-    Route::resource('userType', 'UserTypeController');
-    Route::resource('user', 'UserController');
-});
+Route::group([ 'middleware' => 'JWTApi' ], function () {
+	Route::get('', function() {
+		return null;
+	});
 
+	Route::apiResource('userType', 'UserTypeController');
+	Route::apiResource('user', 'UserController');
+});

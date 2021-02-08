@@ -1,19 +1,15 @@
 <?php
+// Comando para registrar novos Helpers depois de adicionados no composer.json
+// composer dump-autoload
 
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
-function authMenu($route) {
+function hasInvalidRulesModel($modelClass, $data) {
+	$validator = Validator::make($data, $modelClass::$rules);
 
-	$mapAutMenu = [
-		'panel.index' => [6, 5, 4, 3],
-		'panel.configUser'=> [6, 5, 4],
-		'panel.userType' => [6, 5],
-		'panel.user' => [6, 5, 4],
-	];
+	if ($validator->fails()) {
+		return response()->json([ 'errors' => $validator->errors()->all() ], 422);
+	}
 
-	$level = Auth::user()->userType->level;
-
-	return isset($mapAutMenu[$route]) ? in_array($level, $mapAutMenu[$route]) : false;
+	return null;
 }
-
-
