@@ -6,12 +6,12 @@
         color="secondary"
         icon="library_add"
         title="Novo Usuário"
-        to="/tipo_usuario-form"
+        to="/usuario-form"
       />
     </div>
 
     <q-table
-      title="Tipo de Usuário"
+      title="Usuário"
       :data="data"
       :columns="columns"
       color="primary"
@@ -28,7 +28,7 @@
             size="sm"
             dense
             :data="getDataList"
-            :to="{ name: 'userType_form', params: { id: props.row.id } }"
+            :to="{ name: 'user_form', params: { id: props.row.id } }"
           />
           <q-btn
             title="Deletar Usuário"
@@ -70,15 +70,15 @@ export default {
         {
           name: "name",
           align: "centre",
-          label: "Nome_Tipo",
+          label: "Nome",
           field: "name",
           sortable: true,
         },
         {
-          name: "level",
+          name: "userType_id",
           align: "centre",
-          label: "Nível_Permissão",
-          field: "level",
+          label: "Tipo",
+          field: "userType_id",
           sortable: true,
         },
         {
@@ -98,7 +98,7 @@ export default {
     getDataList() {
       return this.$axios({
         method: "get",
-        url: "http://127.0.0.1:8000/api/userType",
+        url: "http://127.0.0.1:8000/api/user",
         headers: {
           "gp-token": this.$q.sessionStorage.getItem("gp_token"),
         },
@@ -109,7 +109,7 @@ export default {
     deleteData(id) {
       return this.$axios({
         method: "delete",
-        url: "http://127.0.0.1:8000/api/userType/" + id,
+        url: "http://127.0.0.1:8000/api/user/" + id,
         headers: {
           "gp-token": this.$q.sessionStorage.getItem("gp_token"),
         },

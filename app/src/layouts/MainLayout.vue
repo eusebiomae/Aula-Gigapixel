@@ -51,10 +51,16 @@ import EssentialLink from '../components/EssentialLink.vue'
 
 const linksData = [
   {
-    title: 'Tipo Usuario',
+    title: 'Tipo Usuário',
     caption: 'Configure Tipo de Usuário',
     icon: 'supervisor_account',
     link: 'tipo_usuario',
+  },
+  {
+    title: 'Usuário',
+    caption: 'Configure Usuário',
+    icon: 'supervisor_account',
+    link: 'usuario',
   },
 ]
 

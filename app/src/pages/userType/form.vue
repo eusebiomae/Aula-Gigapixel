@@ -55,7 +55,7 @@ export default {
       }).then (() => {
 
 				this.$q.notify({
-					message: 'Fromulário Cadastrado com Sucesso!',
+					message: 'Tipo de Usuário Cadastrado com Sucesso!',
 					color: 'positive',
 					icon: 'cloud_done'
 				})
