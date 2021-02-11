@@ -36,7 +36,7 @@ export default {
 	methods: {
 		onSubmit () {
 			let method = null
-			let url = ''
+			let url = '';
 
 			if (this.dataForm.id) {
 				method = 'put'

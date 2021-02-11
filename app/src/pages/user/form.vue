@@ -24,7 +24,13 @@
           type="password"
           hint="Digite Senha de Usuário"
         />
-        <!-- <q-select v-model="dataForm.userType" outlined type="userType" hint="Escolha Tipo de Usuário" /> -->
+        <br />
+        <q-input
+          v-model="dataForm.user_type_id"
+          outlined
+          hint="Escolha Tipo de Usuário"
+          :data="getData"
+        />
         <div class="row justify-end q-my-sm">
           <q-btn label="Salvar" type="submit" color="pink-6" />
           <q-btn
@@ -52,20 +58,20 @@ export default {
   methods: {
     onSubmit() {
       let method = null;
-      let url = '';
+      let url = "";
 
       if (this.dataForm.id) {
-        method = 'put';
-        url = '/' + this.dataForm.id;
+        method = "put";
+        url = "/" + this.dataForm.id;
       } else {
-        method = 'post';
+        method = "post";
       }
 
       this.$axios({
         method: method,
-        url: 'http://127.0.0.1:8000/api/user' + url,
+        url: "http://127.0.0.1:8000/api/user" + url,
         headers: {
-          "gp-token": this.$q.sessionStorage.getItem('gp_token'),
+          "gp-token": this.$q.sessionStorage.getItem("gp_token"),
         },
         data: this.dataForm,
       }).then(() => {

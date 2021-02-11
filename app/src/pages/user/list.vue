@@ -75,10 +75,10 @@ export default {
           sortable: true,
         },
         {
-          name: "userType_id",
+          name: "userType_name",
           align: "centre",
           label: "Tipo",
-          field: "userType_id",
+          field: (data) => data.userType?.name,
           sortable: true,
         },
         {
@@ -104,6 +104,8 @@ export default {
         },
       }).then((resp) => {
         this.data = resp.data;
+
+        console.table(this.data)
       });
     },
     deleteData(id) {
