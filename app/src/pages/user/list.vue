@@ -104,8 +104,6 @@ export default {
         },
       }).then((resp) => {
         this.data = resp.data;
-
-        console.table(this.data)
       });
     },
     deleteData(id) {

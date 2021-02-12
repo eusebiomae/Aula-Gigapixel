@@ -25,12 +25,18 @@
           hint="Digite Senha de Usuário"
         />
         <br />
-        <q-input
+
+        <q-select
           v-model="dataForm.user_type_id"
           outlined
+          :options="dataListUserType"
+          option-value="id"
+          option-label="name"
+          emit-value
+          map-options
           hint="Escolha Tipo de Usuário"
-          :data="getData"
         />
+
         <div class="row justify-end q-my-sm">
           <q-btn label="Salvar" type="submit" color="pink-6" />
           <q-btn
@@ -52,6 +58,8 @@ export default {
   data() {
     return {
       dataForm: {},
+      user_type_id: '',
+      dataListUserType: [],
     };
   },
 
@@ -95,11 +103,24 @@ export default {
 
       this.dataForm = data;
     },
+    getListUserType() {
+      this.$axios({
+        method: "get",
+        url: "http://127.0.0.1:8000/api/userType/",
+        headers: {
+          "gp-token": this.$q.sessionStorage.getItem("gp_token"),
+        },
+      }).then(resp => {
+        this.dataListUserType = resp.data
+      })
+    }
   },
   mounted() {
     if (this.$route.params.id) {
       this.getData(this.$route.params.id);
     }
+
+    this.getListUserType()
   },
 };
 </script>
